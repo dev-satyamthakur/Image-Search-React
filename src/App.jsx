@@ -1,25 +1,28 @@
+import React, { useState, useEffect } from 'react';
+import ImageCard from './components/ImageCard';
+
 function App() {
+
+  const [images, setImages] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [term, setTerm] = useState('');
+
+  useEffect(() => {
+    fetch(`https://pixabay.com/api/?key=${process.env.REACT_APP_PIXABAY_API_KEY}&q=${term}&image_type=photo&pretty=true`).then(res => res.json())
+    .then(data => {
+      console.log(data);
+      setImages(data.hits);
+      setIsLoading(false);
+    })
+    .catch(err => console.log(err));
+  }, []);
+
   return (
-    <div className="max-w-sm rounded-xl overflow-hidden shadow-lg">
-      <img src="https://source.unsplash.com/random" alt="" className="w-full"/>
-      <div className="px-6 py-4">
-        <div className="font-bold text-orange-500 text-xl mb-2 w-full text-center">
-          Photo by John Doe
-        </div>
-        <ul>
-          <li>
-            <strong>Views: </strong>
-            4000
-          </li>
-          <li>
-            <strong>Downloads: </strong>
-            258
-          </li>
-          <li>
-            <strong>Likes: </strong>
-            300
-          </li>
-        </ul>
+    <div className="container mx-auto px-4">
+      <div className="grid grid-cols-3 gap-4">
+        {images.map(image => (
+          <ImageCard key={image.id} image={image} />
+        ))}
       </div>
     </div>
   );
