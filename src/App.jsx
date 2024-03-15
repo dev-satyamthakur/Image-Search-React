@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ImageCard from './components/ImageCard';
+import ImageSearch from './components/ImageSearch';
 
 function App() {
 
@@ -15,15 +16,21 @@ function App() {
       setIsLoading(false);
     })
     .catch(err => console.log(err));
-  }, []);
+  }, [term]);
 
   return (
     <div className="container mx-auto px-4">
-      <div className="grid grid-cols-3 gap-4">
-        {images.map(image => (
-          <ImageCard key={image.id} image={image} />
-        ))}
-      </div>
+      <ImageSearch searchText={(text) => setTerm(text)} />
+
+      {!isLoading && images.length === 0 && <h1 className="text-6xl text-center mx-auto mt-32">No Images Found</h1>}
+
+      {isLoading ? <h1 className="text-6xl text-center mx-auto mt-32">Image Loading</h1> : 
+        <div className="grid grid-cols-3 gap-4">
+          {images.map(image => (
+            <ImageCard key={image.id} image={image} />
+          ))}
+        </div>
+      }
     </div>
   );
 }
